@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بس لمنمن</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        /* خلفية النجوم */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* الحاويات */
+        .container {
+            z-index: 10;
+            transition: opacity 1.5s ease-in-out;
+            max-width: 600px;
+            padding: 20px;
+        }
+
+        h1 { font-size: 2.2rem; margin-bottom: 20px; text-shadow: 0 0 10px #fff; }
+
+        .btn {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin: 10px;
+            border-radius: 50px;
+            transition: 0.4s;
+        }
+
+        .btn:hover {
+            background: white;
+            color: black;
+            box-shadow: 0 0 20px #fff;
+        }
+
+        .hidden { display: none; opacity: 0; }
+
+        /* الشاشة النهائية والرسالة */
+        #final-screen {
+            overflow-y: auto;
+            max-height: 90vh;
+            scrollbar-width: none; /* إخفاء السكرول بار للمتصفحات الحديثة */
+        }
+
+        #final-screen::-webkit-scrollbar { display: none; }
+
+        #final-screen img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            box-shadow: 0 0 20px rgba(255,255,255,0.5);
+            margin-bottom: 20px;
+        }
+
+        .love-letter {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            line-height: 1.8;
+            font-size: 1.2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: right;
+            white-space: pre-wrap; /* يحافظ على الفراغات والأسطر */
+        }
+
+        .heart-icon {
+            color: #ff4d4d;
+            font-size: 2rem;
+            margin-top: 15px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stars" id="starField"></div>
+
+    <audio id="bgMusic" loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="q1" class="container">
+        <h1>تحبيني؟</h1>
+        <button class="btn" onclick="nextStep()">احبك هواي</button>
+        <button class="btn" onclick="nextStep()">ما احبك اصلا</button>
+    </div>
+
+    <div id="q2" class="container hidden">
+        <h1>بس اني احبج اكثر، تريدين تشوفين شكد؟</h1>
+        <button class="btn" onclick="showFinal()">اي</button>
+        <button class="btn" onclick="showFinal()">غصبا عنج اي</button>
+    </div>
+
+    <div id="final-screen" class="container hidden">
+        <img src="photo.png" alt="صورتنا">
+        
+        <div class="love-letter">
+الرسالة هنااااااااااا
+            <span class="heart-icon">❤</span>
+        </div>
+    </div>
+
+    <script>
+        // إنشاء النجوم
+        const starField = document.getElementById('starField');
+        const colors = ['#FFD700', '#1E90FF', '#FFFFFF'];
+
+        for (let i = 0; i < 200; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 2 + 1 + 'px';
+            star.style.width = size;
+            star.style.height = size;
+            star.style.top = Math.random() * 100 + '%';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            star.style.setProperty('--duration', Math.random() * 3 + 2 + 's');
+            starField.appendChild(star);
+        }
+
+        const music = document.getElementById('bgMusic');
+
+        function nextStep() {
+            music.play().catch(e => console.log("المتصفح يحتاج تفاعل لتشغيل الصوت"));
+            transition('q1', 'q2');
+        }
+
+        function showFinal() {
+            transition('q2', 'final-screen');
+            // السماح بالتمرير في الصفحة الأخيرة لقراءة الرسالة
+            document.body.style.overflowY = "auto";
+        }
+
+        function transition(fromId, toId) {
+            const from = document.getElementById(fromId);
+            const to = document.getElementById(toId);
+            
+            from.style.opacity = '0';
+            setTimeout(() => {
+                from.classList.add('hidden');
+                to.classList.remove('hidden');
+                setTimeout(() => to.style.opacity = '1', 100);
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
